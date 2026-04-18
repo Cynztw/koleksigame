@@ -1,5 +1,5 @@
 :root {
-    --primary-color: #1b1f23;
+    --primary-color: #dde1e6;
     --primary-light: #2d3436;
     --primary-lighter: #3f4654;
     --accent-color: #1aa5e1;
@@ -25,7 +25,7 @@ html {
 }
 
 body {
-    background: #0f1419;
+    background: #b9c3cd;
     background-attachment: fixed;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -446,8 +446,6 @@ a:hover {
 
 .text-muted {
     color: var(--text-secondary) !important;
-}
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }
 
 .form-label {

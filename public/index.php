@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $game_id = buatGame($pdo, $_POST['judul'], $_POST['kategori_id'], $_POST['developer_name'] ?? '', $_POST['tahun_rilis'] ?? null, $gambar);
             
             if (isset($_POST['tambah_koleksi'])) {
-                tambahKeKoleksi($pdo, $game_id, $_POST['platform'] ?? 'PC', 0, 0);
+                tambahKeKoleksi($pdo, $game_id, $_POST['platform_koleksi'] ?? 'PC', 0, 0);
             }
             
             if (isset($_POST['tambah_wishlist'])) {
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isDeveloper()) {
     $games = getGames($pdo);  // Developer's own games
 } else {
-    $available_games = getAvailableGames($pdo);  // All available games for pemain
+    $games = getAvailableGames($pdo);  // All available games for pemain
 }
 
 $kategori = getKategori($pdo);
@@ -197,6 +197,20 @@ $wishlist = getWishlistUser($pdo);
                                 <input type="number" class="form-control" id="tahun_rilis" name="tahun_rilis" min="1980">
                             </div>
 
+                            <div class="mb-3">
+                                <label for="platform_default" class="form-label">Platform Tersedia</label>
+                                <select class="form-select" id="platform_default" name="platform_default" multiple>
+                                    <option value="PC" selected>PC</option>
+                                    <option value="PS4">PlayStation 4</option>
+                                    <option value="PS5">PlayStation 5</option>
+                                    <option value="Xbox One">Xbox One</option>
+                                    <option value="Xbox X/S">Xbox Series X/S</option>
+                                    <option value="Nintendo Switch">Nintendo Switch</option>
+                                    <option value="Mobile">Mobile</option>
+                                </select>
+                                <small class="text-muted">Pilih satu atau lebih platform</small>
+                            </div>
+
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="tambah_koleksi" name="tambah_koleksi">
                                 <label class="form-check-label" for="tambah_koleksi">
@@ -206,8 +220,8 @@ $wishlist = getWishlistUser($pdo);
 
                             <div id="koleksi_options" style="display:none;">
                                 <div class="mb-3">
-                                    <label for="platform" class="form-label">Platform</label>
-                                    <input type="text" class="form-control" id="platform" name="platform" placeholder="PC, Console, Mobile...">
+                                    <label for="platform_koleksi" class="form-label">Platform Koleksi Saya</label>
+                                    <input type="text" class="form-control" id="platform_koleksi" name="platform_koleksi" placeholder="e.g: Steam, Epic Games...">
                                 </div>
                             </div>
 
@@ -254,7 +268,7 @@ $wishlist = getWishlistUser($pdo);
                                 <label for="available_games" class="form-label">Pilih Game</label>
                                 <select class="form-select" id="available_games" name="game_id" required>
                                     <option value="">-- Pilih Game --</option>
-                                    <?php foreach ($available_games as $g): ?>
+                                    <?php foreach ($games as $g): ?>
                                     <option value="<?= $g['id'] ?>"><?= htmlspecialchars($g['judul']) ?> (<?= htmlspecialchars($g['developer_name'] ?? $g['developer_username'] ?? 'Unknown') ?>)</option>
                                     <?php endforeach; ?>
                                 </select>
@@ -291,7 +305,7 @@ $wishlist = getWishlistUser($pdo);
                         <?php else: ?>
                         <div class="row">
                             <?php $count = 0; foreach ($koleksi as $k): if ($count >= 5) break; $count++; 
-                                $img_path = !empty($k['gambar']) ? '../assets/uploads/games/' . $k['gambar'] : '../assets/uploads/games/placeholder.png';
+                                $img_path = !empty($k['gambar']) ? 'http://localhost/web%20pro%20S2/koleksigame/assets/uploads/games/' . $k['gambar'] : 'http://localhost/web%20pro%20S2/koleksigame/assets/uploads/games/placeholder.png';
                             ?>
                             <div class="col-md-6 mb-3">
                                 <div class="card border">

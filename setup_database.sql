@@ -47,8 +47,6 @@ CREATE TABLE IF NOT EXISTS `game` (
   INDEX idx_kategori_id (kategori_id),
   INDEX idx_judul (judul)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-  INDEX idx_judul (judul)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Tabel koleksi (game yang dimiliki user)
 CREATE TABLE IF NOT EXISTS `koleksi` (
