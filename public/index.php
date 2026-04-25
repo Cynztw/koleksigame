@@ -43,6 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($_POST['action'] === 'add_to_koleksi') {
             tambahKeKoleksi($pdo, $_POST['game_id'], $_POST['platform'] ?? 'PC');
+            
+            // Jika checkbox "Juga tambah ke Wishlist" dicentang
+            if (isset($_POST['add_wishlist_checkbox'])) {
+                tambahKeWishlist($pdo, $_POST['game_id'], $_POST['wishlist_prioritas'] ?? 5, '');
+            }
+            
             header('Location: index.php?success=1');
             exit;
         }
@@ -261,6 +267,12 @@ $wishlist = getWishlistUser($pdo);
                         <h5 class="mb-0">➕ Tambah Game ke Koleksi</h5>
                     </div>
                     <div class="card-body">
+                        <!-- DEBUG -->
+                        <div style="background: #fff3cd; padding: 10px; margin-bottom: 10px; border-radius: 4px; font-size: 0.85rem;">
+                            Role: <strong><?= htmlspecialchars(getUserRole()) ?></strong> | 
+                            Games: <strong><?= count($games) ?></strong>
+                        </div>
+                        
                         <form method="POST">
                             <input type="hidden" name="action" value="add_to_koleksi">
                             
@@ -287,6 +299,26 @@ $wishlist = getWishlistUser($pdo);
                                 </select>
                             </div>
 
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="add_wishlist_checkbox" name="add_wishlist_checkbox">
+                                <label class="form-check-label" for="add_wishlist_checkbox">
+                                    Juga tambah ke Wishlist
+                                </label>
+                            </div>
+
+                            <div id="wishlist_priority" style="display:none;">
+                                <div class="mb-3">
+                                    <label for="wishlist_prioritas" class="form-label">Prioritas (1-10)</label>
+                                    <select class="form-select" id="wishlist_prioritas" name="wishlist_prioritas">
+                                        <option value="5">5 - Normal</option>
+                                        <option value="1">1 - Sangat Tinggi</option>
+                                        <option value="3">3 - Tinggi</option>
+                                        <option value="7">7 - Rendah</option>
+                                        <option value="10">10 - Sangat Rendah</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-info w-100">Tambah ke Koleksi</button>
                         </form>
                     </div>
@@ -305,7 +337,7 @@ $wishlist = getWishlistUser($pdo);
                         <?php else: ?>
                         <div class="row">
                             <?php $count = 0; foreach ($koleksi as $k): if ($count >= 5) break; $count++; 
-                                $img_path = !empty($k['gambar']) ? 'http://localhost/web%20pro%20S2/koleksigame/assets/uploads/games/' . $k['gambar'] : 'http://localhost/web%20pro%20S2/koleksigame/assets/uploads/games/placeholder.png';
+                                $img_path = !empty($k['gambar']) ? 'http://localhost/web%20pro%20S2/koleksigame/uploads/games/' . $k['gambar'] : 'http://localhost/web%20pro%20S2/koleksigame/uploads/games/placeholder.png';
                             ?>
                             <div class="col-md-6 mb-3">
                                 <div class="card border">
@@ -357,6 +389,9 @@ $wishlist = getWishlistUser($pdo);
 
         document.getElementById('tambah_wishlist').addEventListener('change', function() {
             document.getElementById('wishlist_options').style.display = this.checked ? 'block' : 'none';
+        });
+        document.getElementById('add_wishlist_checkbox').addEventListener('change', function() {
+            document.getElementById('wishlist_priority').style.display = this.checked ? 'block' : 'none';
         });
     </script>
 </body>

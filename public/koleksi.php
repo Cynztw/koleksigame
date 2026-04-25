@@ -100,7 +100,7 @@ $koleksi = getKoleksiUser($pdo);
                 <div class="card">
                     <div class="position-relative">
                         <?php 
-                        $img_path = !empty($k['gambar']) ? '../assets/uploads/games/' . $k['gambar'] : '../assets/uploads/games/placeholder.png';
+                        $img_path = !empty($k['gambar']) ? 'http://localhost/web%20pro%20S2/koleksigame/uploads/games/' . $k['gambar'] : 'http://localhost/web%20pro%20S2/koleksigame/uploads/games/placeholder.png';
                         ?>
                         <img src="<?php echo $img_path; ?>" class="card-img-top" style="height: 200px; object-fit: cover;">
                         <div class="position-absolute top-0 end-0 m-2">

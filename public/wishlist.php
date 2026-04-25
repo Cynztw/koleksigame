@@ -22,7 +22,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $wishlist = getWishlistUser($pdo);
-$games = getGames($pdo);
+
+// Get games sesuai role
+if (isDeveloper()) {
+    $games = getGames($pdo);  // Developer's own games
+} else {
+    $games = getAvailableGames($pdo);  // All available games for pemain
+}
+
 $kategori = getKategori($pdo);
 ?>
 
@@ -146,60 +153,83 @@ $kategori = getKategori($pdo);
 
         <?php if (empty($wishlist)): ?>
         <div class="alert alert-info">
-            <p>Wishlist Anda kosong. <a href="index.php">Buat game baru</a> atau pilih dari daftar di atas.</p>
+            <p>Wishlist Anda kosong. <a href="index.php">Tambahkan game</a> dari dashboard.</p>
         </div>
         <?php else: ?>
 
-        <div class="table-responsive">
-            <table class="table table-hover table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Judul Game</th>
-                        <th>Kategori</th>
-                        <th>Developer</th>
-                        <th>Prioritas</th>
-                        <th>Alasan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($wishlist as $w): ?>
-                    <tr>
-                        <td><strong><?php echo htmlspecialchars($w['judul']); ?></strong></td>
-                        <td><?php echo $w['kategori_nama'] ?? 'N/A'; ?></td>
-                        <td><?php echo $w['developer'] ?? 'N/A'; ?></td>
-                        <td>
+        <div class="row">
+            <?php foreach ($wishlist as $w): ?>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title"><?php echo htmlspecialchars($w['judul']); ?></h5>
                             <?php 
                             $prioritas_label = [
                                 1 => '<span class="badge bg-danger">Sangat Tinggi</span>',
-                                3 => '<span class="badge bg-warning">Tinggi</span>',
+                                3 => '<span class="badge bg-warning text-dark">Tinggi</span>',
                                 5 => '<span class="badge bg-secondary">Normal</span>',
                                 7 => '<span class="badge bg-info">Rendah</span>',
                                 10 => '<span class="badge bg-light text-dark">Sangat Rendah</span>'
                             ];
                             echo $prioritas_label[$w['prioritas']] ?? '<span class="badge bg-secondary">' . $w['prioritas'] . '</span>';
                             ?>
-                        </td>
-                        <td>
-                            <?php 
-                            if ($w['alasan']) {
-                                echo '<small>' . htmlspecialchars(substr($w['alasan'], 0, 50)) . (strlen($w['alasan']) > 50 ? '...' : '') . '</small>';
-                            } else {
-                                echo '<small class="text-muted">-</small>';
-                            }
-                            ?>
-                        </td>
-                        <td>
+                        </div>
+                        
+                        <p class="text-muted small mb-2">
+                            <strong>Developer:</strong> <?php echo htmlspecialchars($w['developer_username'] ?? 'Unknown'); ?>
+                        </p>
+                        
+                        <p class="text-muted small mb-2">
+                            <strong>Kategori:</strong> <?php echo htmlspecialchars($w['kategori_nama'] ?? 'N/A'); ?>
+                        </p>
+
+                        <?php if ($w['alasan']): ?>
+                        <div class="card bg-light mb-3" style="font-size: 0.9rem;">
+                            <div class="card-body p-2">
+                                <small><strong>Alasan:</strong> <?php echo htmlspecialchars($w['alasan']); ?></small>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <small class="text-muted d-block mb-3">
+                            Ditambahkan: <?php echo date('d M Y', strtotime($w['tanggal_ditambah'])); ?>
+                        </small>
+
+                        <div class="d-grid gap-2">
                             <form method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="delete_wishlist">
                                 <input type="hidden" name="wishlist_id" value="<?php echo $w['id']; ?>">
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus dari wishlist?')">Hapus</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus dari wishlist?')">🗑️ Hapus dari Wishlist</button>
                             </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <hr class="my-5">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Ringkasan Wishlist</h4>
+                <div class="alert alert-info">
+                    <p class="mb-0">📊 <strong>Total Game:</strong> <?php echo count($wishlist); ?> | 
+                    <strong>Prioritas Tertinggi:</strong> 
+                    <?php 
+                    $highest = null;
+                    foreach ($wishlist as $w) {
+                        if ($w['prioritas'] == 1) {
+                            $highest = htmlspecialchars($w['judul']);
+                            break;
+                        }
+                    }
+                    echo $highest ?? '-';
+                    ?>
+                    </p>
+                </div>
+            </div>
         </div>
 
         <?php endif; ?>

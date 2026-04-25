@@ -164,7 +164,7 @@ function tambahKeKoleksi($pdo, $game_id, $platform, $jam_main = 0, $persentase_s
 // Dapatkan koleksi pengguna
 function getKoleksiUser($pdo) {
     $user_id = getCurrentUserId();
-    $stmt = $pdo->prepare("SELECT k.*, g.judul, g.kategori_id, kat.nama as kategori_nama, g.developer_name,
+    $stmt = $pdo->prepare("SELECT k.*, g.judul, g.kategori_id, g.gambar, kat.nama as kategori_nama, g.developer_name,
                           g.status, g.rating, u.username as developer_username FROM koleksi k 
                           JOIN game g ON k.game_id = g.id
                           LEFT JOIN kategori kat ON g.kategori_id = kat.id

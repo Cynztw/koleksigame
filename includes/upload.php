@@ -1,7 +1,7 @@
 <?php
 // Handle file upload
 function uploadGameImage($file) {
-    $target_dir = __DIR__ . "/../assets/uploads/games/";
+    $target_dir = __DIR__ . "/../uploads/games/";
     
     // Buat folder jika belum ada
     if (!is_dir($target_dir)) {
@@ -38,7 +38,7 @@ function uploadGameImage($file) {
         return [
             'success' => true, 
             'filename' => $file_name,
-            'path' => '../assets/uploads/games/' . $file_name
+            'path' => '/uploads/games/' . $file_name
         ];
     } else {
         return ['success' => false, 'message' => 'Gagal upload file'];
@@ -48,15 +48,15 @@ function uploadGameImage($file) {
 // Dapatkan path gambar
 function getGameImagePath($filename) {
     if (empty($filename)) {
-        return '../assets/uploads/games/placeholder.png';
+        return 'http://localhost/web%20pro%20S2/koleksigame/uploads/games/placeholder.png';
     }
-    return '../assets/uploads/games/' . $filename;
+    return 'http://localhost/web%20pro%20S2/koleksigame/uploads/games/' . $filename;
 }
 
 // Hapus gambar
 function deleteGameImage($filename) {
     if (!empty($filename)) {
-        $file_path = __DIR__ . "/../assets/uploads/games/" . $filename;
+        $file_path = __DIR__ . "/../uploads/games/" . $filename;
         if (file_exists($file_path)) {
             unlink($file_path);
         }
