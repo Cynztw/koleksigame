@@ -23,8 +23,8 @@ try {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
+
+
 <head>
     <meta charset="UTF-8">
     <title>Wishlist Saya - Steam Clone</title>
