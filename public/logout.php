@@ -1,6 +1,8 @@
 <?php
+// public/logout.php
+require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-// Logout
+// Jalankan fungsi logout yang sudah kita buat di atas
 logoutUser();
 ?>
