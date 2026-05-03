@@ -30,7 +30,8 @@ function getCurrentUserId() {
 
 // 2. Data Functions
 function getKategori($pdo) {
-    return $pdo->query("SELECT id, nama FROM kategori ORDER BY nama ASC")->fetchAll();
+    $stmt = $pdo->query("SELECT id, nama FROM kategori ORDER BY nama ASC LIMIT 5");
+    return $stmt->fetchAll();
 }
 
 function getAllGames($pdo) {
@@ -52,6 +53,12 @@ function getWishlist($pdo, $user_id) {
 }
 
 // 3. Action Functions
+function tambahKeWishlist($pdo, $user_id, $game_id, $prioritas = 5, $alasan = '') {
+    $sql = "INSERT IGNORE INTO wishlist (user_id, game_id) VALUES (?, ?)";
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute([$user_id, $game_id]);
+}
+
 function tambahKeKoleksi($pdo, $user_id, $game_id) {
     $sql = "INSERT IGNORE INTO koleksi (user_id, game_id, platform, progress) VALUES (?, ?, '', '')";
     $stmt = $pdo->prepare($sql);
@@ -59,10 +66,31 @@ function tambahKeKoleksi($pdo, $user_id, $game_id) {
 }
 
 function buatGame($pdo, $judul, $kategori_id, $developer, $user_id) {
-    $sql = "INSERT INTO game (judul, kategori_id, developer, gambar) VALUES (?, ?, ?, 'assets/uploads/games/placeholder.png')";
+    $sql = "INSERT INTO game (judul, kategori_id, developer, developer_id, gambar) VALUES (?, ?, ?, ?, 'assets/uploads/games/placeholder.png')";
     $stmt = $pdo->prepare($sql);
-    return $stmt->execute([$judul, $kategori_id, $developer]);
+    return $stmt->execute([$judul, $kategori_id, $developer, $user_id]);
+}
+
+function updateProgress($pdo, $koleksi_id, $platform, $progress) {
+    $sql = "UPDATE koleksi SET platform = ?, progress = ? WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute([$platform, $progress, $koleksi_id]);
+}
+
+// Photo + Delete Functions
+function updateKoleksiImage($pdo, $koleksi_id, $image_path) {
+    $sql = "UPDATE game g JOIN koleksi k ON g.id = k.game_id SET g.gambar = ? WHERE k.id = ?";
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute([$image_path, $koleksi_id]);
+}
+
+function deleteFromKoleksi($pdo, $koleksi_id) {
+    $sql = "DELETE FROM koleksi WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    return $stmt->execute([$koleksi_id]);
 }
 
 ?>
+
+
 

@@ -1,0 +1,12 @@
+/* Quick CSS Lint Fix - Paste to style.css end */
+
+/* Remove broken animations */
+@keyframes fadeInUp { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* No loading flicker */
+.loading, .games-grid { opacity: 1 !important; transition: none !important; }
+
+/* Clean modal no overlap */
+.modal-body { padding-bottom: 80px !important; }
+.modal-content .modal-header h2 { display: block !important; }

@@ -1,6 +1,9 @@
 <?php
 // includes/header.php - Shared header/nav/sidebar
-$categories = getKategori($pdo); // Assume $pdo available from page
+if (!isset($pdo)) {
+    require_once __DIR__ . '/config.php';
+}
+$categories = getKategori($pdo);
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
@@ -42,5 +45,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
     </aside>
 
-    <main class="main-content">
+<div class="content-wrapper">
+
 

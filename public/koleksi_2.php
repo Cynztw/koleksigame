@@ -14,11 +14,12 @@ $games = getAllGames($pdo);
 $msg = "";
 if (isset($_POST['add_to_library'])) {
     $game_id = $_POST['game_id'];
-    if (tambahKeKoleksi($pdo, $user_id, $game_id)) {
-        $msg = "<div class='alert alert-success'>✅ Game berhasil ditambahkan ke library!</div>";
-    } else {
-        $msg = "<div class='alert alert-warning'>⚠️ Game sudah ada di library.</div>";
-    }
+    $result = tambahKeKoleksi($pdo, $user_id, $game_id);
+    $msg = $result ? "<div class='alert alert-success'>✅ Added to Library!</div>" : "<div class='alert alert-warning'>⚠️ Already in Library</div>";
+} elseif (isset($_POST['add_to_wishlist'])) {
+    $game_id = $_POST['game_id'];
+    $result = tambahKeWishlist($pdo, $user_id, $game_id);
+    $msg = $result ? "<div class='alert alert-success'>❤️ Added to Wishlist!</div>" : "<div class='alert alert-warning'>⚠️ Already in Wishlist</div>";
 }
 $page_title = "Steam Store";
 ?>
@@ -49,12 +50,20 @@ $page_title = "Steam Store";
                         <div class="game-meta">
                             <span class="badge badge-cat"><?= htmlspecialchars($game['kategori_nama']) ?></span>
                         </div>
-                        <form method="POST" style="margin-top: 15px;">
-                            <input type="hidden" name="game_id" value="<?= $game['id'] ?>">
-                            <button type="submit" name="add_to_library" class="btn btn-success w-100">
-                                <i class="fas fa-plus"></i> Tambah ke Library
-                            </button>
-                        </form>
+<div style="gap: 10px; display: flex; flex-direction: column; margin-top: 15px;">
+    <form method="POST">
+        <input type="hidden" name="game_id" value="<?= $game['id'] ?>">
+        <button type="submit" name="add_to_library" class="btn btn-success">
+            <i class="fas fa-plus"></i> Library
+        </button>
+    </form>
+    <form method="POST">
+        <input type="hidden" name="game_id" value="<?= $game['id'] ?>">
+        <button type="submit" name="add_to_wishlist" class="btn btn-secondary">
+            <i class="fas fa-heart"></i> Wishlist
+        </button>
+    </form>
+</div>
                     </div>
                 </div>
             <?php endforeach; ?>
